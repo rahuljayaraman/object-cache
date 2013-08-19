@@ -20,4 +20,3 @@ cache.set "foo1", "newFoo"
 cache.get "foo1"
 
 cache.flush
-puts cache.size
