@@ -7,7 +7,7 @@ ruby bin/server -p 3000 -v -m 256
 ### Use the cache
 
 ```ruby
-require 'lib/object_cache/client'
+require_relative './object_cache/client'
 
 cache = ObjectCache::Server.new("localhost:3000").get_cache_object
 

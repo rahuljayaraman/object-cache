@@ -2,7 +2,7 @@
 
 require 'drb'
 require 'optparse'
-require_relative '../lib/object_cache/server'
+require_relative '../object_cache/server'
 
 options = {}
 

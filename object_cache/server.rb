@@ -1,5 +1,5 @@
 require 'drb'
-require_relative './container'
+require_relative './lib/container'
 
 module ObjectCache
   class Server
