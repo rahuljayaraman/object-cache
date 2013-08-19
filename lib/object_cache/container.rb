@@ -32,6 +32,10 @@ module ObjectCache
       @cache = {}
     end
 
+    def size
+      @cache.count
+    end
+
     private
     def log action, key, value=nil
       return unless @verbose

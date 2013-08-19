@@ -17,7 +17,4 @@ cache.delete "foo11"
 puts cache.get "foo11"
 
 cache.flush
-puts cache.get "foo1"
-puts cache.get "foo2"
-puts cache.get "foo11"
-puts cache.get "foo15"
+puts cache.size
