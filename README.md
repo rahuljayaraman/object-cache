@@ -1,7 +1,7 @@
 ### Run the caching server
 
 ```
-ruby bin/server -p 3000 -v -m 15
+ruby bin/server -p 3000 -v -m 256
 ```
 
 ### Use the cache
@@ -16,10 +16,10 @@ cache.get 'foo' #=> 'bar'
 
 (1..10).each{|n| cache.set("foo#{n}", "bar") }
 
-cache.size #=> 10
+cache.size_in_bytes #=> 70
 cache.delete("foo1")
-cache.size #=> 9
+cache.size_in_bytes #=> 63
 
 cache.flush
-cache.size #=> 0
+cache.size_in_bytes #=> 0
 ```

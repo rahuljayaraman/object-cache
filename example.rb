@@ -11,10 +11,14 @@ end
 puts cache.get "foo11"
 puts cache.get "foo15"
 
+puts cache.size_in_bytes
 cache.delete "foo11"
+puts cache.size_in_bytes
 puts cache.get "foo11"
 
 cache.set "foo1", "newFoo"
 cache.get "foo1"
 
+puts cache.size_in_bytes
 cache.flush
+puts cache.size_in_bytes
