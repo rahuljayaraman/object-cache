@@ -1,7 +1,7 @@
 ### Run the caching server
 
 ```
-ruby bin/server -p 3000 -v
+ruby bin/server -p 3000 -v -m 15
 ```
 
 ### Use the cache

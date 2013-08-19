@@ -16,6 +16,10 @@ OptionParser.new do |opts|
   opts.on("-p", "--port" "Define port") do |p|
     options[:port] = p
   end
+
+  opts.on("-m", "--max-size" "Define Maximum Cache size") do |m|
+    options[:size] = m
+  end
 end.parse!
 
 server = ObjectCache::Server.new(options)

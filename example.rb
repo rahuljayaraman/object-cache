@@ -4,6 +4,11 @@ require_relative './lib/object_cache/client'
 
 cache = ObjectCache::Client.new("localhost:3000").get_cache_object
 
-cache.set "bar", "qux"
+(1..20).each do |n|
+  cache.set "foo#{n}", "bar#{n}"
+end
 
-puts cache.get "bar"
+puts cache.get "foo1"
+puts cache.get "foo2"
+puts cache.get "foo11"
+puts cache.get "foo15"
