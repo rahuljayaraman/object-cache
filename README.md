@@ -9,7 +9,7 @@ ruby bin/server -p 3000 -v
 ```ruby
 require 'lib/object_cache/client'
 
-cache = ObjectCache.new("localhost:3000").cache
+cache = ObjectCache::Server.new("localhost:3000").get_cache_object
 
 cache.set 'foo', 'bar'
 cache.get 'foo' #=> 'bar'
