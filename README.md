@@ -14,7 +14,12 @@ cache = ObjectCache::Server.new("localhost:3000").get_cache_object
 cache.set 'foo', 'bar'
 cache.get 'foo' #=> 'bar'
 
-cache.flush
+(1..10).each{|n| cache.set("foo#{n}", "bar") }
 
+cache.size #=> 10
+cache.delete("foo1")
+cache.size #=> 9
+
+cache.flush
 cache.size #=> 0
 ```
