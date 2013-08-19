@@ -11,6 +11,7 @@ module ObjectCache
     def set key, value
       if size_of_hash_in_bytes(Hash[key, value]) > @max_size
         log(:hash_too_large, key, value)
+        return
       end
 
       log(:set, key, value)
@@ -78,7 +79,7 @@ module ObjectCache
       when :not_found
         log.error "#{key} not found"
       when :hash_too_large
-        log.error "Skipping #{key}. Size too large"
+        log.error "Skipping #{key}. Size larger than #{@max_size} bytes"
       end
     end
 
