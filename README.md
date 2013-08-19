@@ -1,7 +1,9 @@
-### Run the caching server
+### Start a few caching servers
 
 ```
 ruby bin/server -p 3000 -v -m 256
+ruby bin/server -p 3001 -v -m 256
+ruby bin/server -p 3002 -v -m 256
 ```
 
 ### Use the cache
@@ -9,17 +11,15 @@ ruby bin/server -p 3000 -v -m 256
 ```ruby
 require_relative './object_cache/client'
 
-cache = ObjectCache::Client.new("localhost:3000").get_cache_object
+cache = ObjectCache::Client.new(["localhost:3000", "localhost:3001"])
+cache.add_server "localhost:3002"
 
 cache.set 'foo', 'bar'
 cache.get 'foo' #=> 'bar'
 
 (1..10).each{|n| cache.set("foo#{n}", "bar") }
 
-cache.size_in_bytes #=> 70
 cache.delete("foo1")
-cache.size_in_bytes #=> 63
 
 cache.flush
-cache.size_in_bytes #=> 0
 ```

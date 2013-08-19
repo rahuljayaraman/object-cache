@@ -1,17 +1,50 @@
 require 'drb'
+require 'zlib'
 
 module ObjectCache
   class Client
-    def initialize uri
+    def initialize servers
       DRb.start_service
-      @cache = DRbObject.new_with_uri(construct(uri))
+      @remote_cache_objects = []
+      servers.each do |server|
+        add_server server
+      end
     end
 
-    def get_cache_object
-      @cache
+    def add_server server
+      @remote_cache_objects << DRbObject.new_with_uri(construct(server))
     end
+
+    def get key
+      remote_cache_object_for(:get, key)
+    end
+
+    def set key, value
+      remote_cache_object_for(:set, key, value)
+    end
+
+    def delete key
+      remote_cache_object_for(:delete, key)
+    end
+
+    def flush
+      @remote_cache_objects.each do |cache|
+        cache.flush
+      end
+    end
+
 
     private
+
+    def remote_cache_object_for action, key, value=nil
+      idx = Zlib.crc32(key) % @remote_cache_objects.count
+      if value
+        @remote_cache_objects[idx].send action, key, value
+      else
+        @remote_cache_objects[idx].send action, key
+      end
+    end
+
     def construct uri
       "druby://" + uri
     end

@@ -2,23 +2,20 @@
 
 require_relative './object_cache/client'
 
-cache = ObjectCache::Client.new("localhost:3000").get_cache_object
+client = ObjectCache::Client.new(["localhost:3000", "localhost:3001"])
+client.add_server "localhost:3002"
 
 (1..20).each do |n|
-  cache.set "foo#{n}", "bar#{n}"
+  client.set "foo#{n}", "bar#{n}"
 end
 
-puts cache.get "foo11"
-puts cache.get "foo15"
+(1..20).each do |n|
+  puts client.get "foo#{n}"
+end
 
-puts cache.size_in_bytes
-cache.delete "foo11"
-puts cache.size_in_bytes
-puts cache.get "foo11"
+client.delete "foo11"
+puts client.get "foo11"
 
-cache.set "foo1", "newFoo"
-cache.get "foo1"
-
-puts cache.size_in_bytes
-cache.flush
-puts cache.size_in_bytes
+client.set "foo1", "newFoo"
+client.get "foo1"
+client.flush
