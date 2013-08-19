@@ -10,10 +10,13 @@ module ObjectCache
 
     def set key, value
       log(:set, key, value)
+      #This would be necessary to push a key back to
+      #top if it is updated.
+      @cache.delete key
       @cache.store key, value
       if @cache.size > @max_size
-        log(:delete, @cache.first[0])
-        @cache.delete(@cache.first[0])
+        log(:delete, oldest_entry)
+        @cache.delete(oldest_entry)
       end
     end
 
@@ -31,6 +34,7 @@ module ObjectCache
       log(:flush, nil)
       @cache = {}
     end
+
 
     def size
       @cache.count
@@ -50,6 +54,10 @@ module ObjectCache
       when :flush
         log.warn "Flushing all entries"
       end
+    end
+
+    def oldest_entry
+      @cache.first[0]
     end
   end
 end

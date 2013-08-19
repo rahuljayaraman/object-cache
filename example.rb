@@ -16,5 +16,8 @@ puts cache.get "foo15"
 cache.delete "foo11"
 puts cache.get "foo11"
 
+cache.set "foo1", "newFoo"
+cache.get "foo1"
+
 cache.flush
 puts cache.size
