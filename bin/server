@@ -1,0 +1,25 @@
+# !/usr/bin/env ruby -w
+
+require 'drb'
+require 'optparse'
+require_relative '../lib/object_cache/server'
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: example.rb [options]"
+
+  opts.on("-v", "--verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+
+  opts.on("-p", "--port" "Define port") do |p|
+    options[:port] = p
+  end
+end.parse!
+
+server = ObjectCache::Server.new(options)
+server.run!
+
+
+

@@ -1,15 +1,15 @@
 ### Run the caching server
 
 ```
-ruby object_cache_server.rb -p 3000 -v
+ruby bin/server -p 3000 -v
 ```
 
 ### Use the cache
 
 ```ruby
-require 'object_cache'
+require 'lib/object_cache/client'
 
-cache = ObjectCache.new("localhost:3000")
+cache = ObjectCache.new("localhost:3000").cache
 
 cache.set 'foo', 'bar'
 cache.get 'foo' #=> 'bar'
