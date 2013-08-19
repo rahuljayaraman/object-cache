@@ -22,6 +22,16 @@ module ObjectCache
       @cache.fetch(key) { nil }
     end
 
+    def delete key
+      log(:delete, key)
+      @cache.delete key
+    end
+
+    def flush
+      log(:flush, nil)
+      @cache = {}
+    end
+
     private
     def log action, key, value=nil
       return unless @verbose
@@ -33,6 +43,8 @@ module ObjectCache
         log.info "Getting the value of #{key}"
       when :delete
         log.warn "Deleting #{key}"
+      when :flush
+        log.warn "Flushing all entries"
       end
     end
   end

@@ -13,4 +13,8 @@ cache = ObjectCache::Server.new("localhost:3000").get_cache_object
 
 cache.set 'foo', 'bar'
 cache.get 'foo' #=> 'bar'
+
+cache.flush
+
+cache.size #=> 0
 ```
