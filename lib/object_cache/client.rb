@@ -6,8 +6,14 @@ module ObjectCache
     def initialize servers
       DRb.start_service
       @remote_cache_objects = []
-      servers.each do |server|
-        add_server server
+      if servers.instance_of? String
+        add_server servers
+      elsif servers.instance_of? Array
+        servers.each do |server|
+          add_server server
+        end
+      else
+        raise ArgumentError
       end
     end
 

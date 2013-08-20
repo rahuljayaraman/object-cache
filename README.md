@@ -11,11 +11,15 @@ ruby bin/server -p 3002 -vv -m 256
 ```ruby
 require_relative './object_cache/client'
 
-cache = ObjectCache::Client.new(["localhost:3000", "localhost:3001"])
-cache.add_server "localhost:3002"
+client = ObjectCache::Client.new(["localhost:3000", "localhost:3001"])
+client.add_server "localhost:3002"
 
-cache.set 'foo', 'bar'
-cache.get 'foo' #=> 'bar'
+client.set 'foo', 'bar'
+client.get 'foo' #=> 'bar'
+
+client2 = ObjectCache::Client.new("localhost:3000")
+client2.set 'foo2', 'bar2'
+client2.get 'foo2' #=> 'bar2'
 
 str = "a"
 100.times { str += "a" }
@@ -26,7 +30,7 @@ p client.get "foo1" #=> 100 a's
 client.set "foo1", { longHash: str } #This will not work due to the 256 byte memory constraint
 p client.get "foo1" #=> 100 a's
 
-cache.delete("foo1")
+client.delete("foo1")
 
-cache.flush
+client.flush
 ```

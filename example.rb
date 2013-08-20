@@ -23,4 +23,8 @@ str = "a"
 client.set "foo1", { longHash: str }
 p client.get "foo1"
 
+client2 = ObjectCache::Client.new("localhost:3000")
+client2.set "2foo", "2bar"
+puts client2.get "2foo"
+
 client.flush
