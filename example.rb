@@ -1,6 +1,6 @@
 # !/usr/bin/env ruby -w
 
-require_relative './object_cache/client'
+require_relative './lib/object_cache/client'
 
 client = ObjectCache::Client.new(["localhost:3000", "localhost:3001"])
 client.add_server "localhost:3002"
