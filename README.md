@@ -1,9 +1,9 @@
 ### Start a few caching servers
 
 ```
-ruby bin/server -p 3000 -v -m 256
-ruby bin/server -p 3001 -v -m 256
-ruby bin/server -p 3002 -v -m 256
+ruby bin/server -p 3000 -vv -m 256
+ruby bin/server -p 3001 -vv -m 256
+ruby bin/server -p 3002 -vv -m 256
 ```
 
 ### Use the cache
