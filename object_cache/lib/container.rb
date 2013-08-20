@@ -3,14 +3,14 @@ require 'logger'
 module ObjectCache
   class Container
     def initialize params
-      @verbose = params.fetch(:verbose) {false}
+      @verbosity = params.fetch(:verbosity)
       @max_size = params.fetch(:max_size)
       @cache = {}
     end
 
     def set key, value
       if size_of_hash_in_bytes(Hash[key, value]) > @max_size
-        log(:hash_too_large, key, value)
+        log_error(:object_too_large, key)
         return
       end
 
@@ -26,16 +26,16 @@ module ObjectCache
 
     def get key, value=nil
       log(:get, key)
-      @cache.fetch(key) { log(:not_found, key); nil }
+      @cache.fetch(key) { log_error(:not_found, key); nil }
     end
 
     def delete key, value=nil
-      log(:delete, key)
+      log_warning(:delete, key)
       @cache.delete key
     end
 
     def flush
-      log(:flush, nil)
+      log_warning(:flush, nil)
       @cache = {}
     end
 
@@ -46,7 +46,7 @@ module ObjectCache
     private
     def delete_lru
       if size_in_bytes > @max_size
-        log(:delete, oldest_entry)
+        log_warning(:delete, oldest_entry)
         @cache.delete(oldest_entry)
         
         #Delete till there's enough room in cache
@@ -65,22 +65,43 @@ module ObjectCache
     end
 
     def log action, key, value=nil
-      return unless @verbose
+      return unless high_verbosity
       log = Logger.new(STDOUT)
       case action
       when :set
         log.info "Setting the value of #{key} to #{value}"
       when :get
         log.info "Getting the value of #{key}"
+      end
+    end
+
+    def log_error action, key
+      log = Logger.new(STDOUT)
+      case action
+      when :not_found
+        log.error "#{key} not found"
+      when :object_too_large
+        log.error "Skipping #{key}. Size larger than #{@max_size} bytes"
+      end
+    end
+
+    def log_warning action, key
+      return unless low_verbosity
+      log = Logger.new(STDOUT)
+      case action
       when :delete
         log.warn "Deleting #{key}"
       when :flush
         log.warn "Flushing all entries"
-      when :not_found
-        log.error "#{key} not found"
-      when :hash_too_large
-        log.error "Skipping #{key}. Size larger than #{@max_size} bytes"
       end
+    end
+
+    def high_verbosity
+      @verbosity == :high
+    end
+
+    def low_verbosity
+      @verbosity == :high || @verbosity == :low
     end
 
   end

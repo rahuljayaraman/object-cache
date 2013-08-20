@@ -9,8 +9,12 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: example.rb [options]"
 
-  opts.on("-v", "--verbose", "Run verbosely") do |v|
-    options[:verbose] = v
+  opts.on("-v", "--[no-]verbose", "Verbose") do |v|
+    options[:verbosity] = :low if v
+  end
+
+  opts.on("-vv", "--[no-]very-verbose", "Very verbose") do |vv|
+    options[:verbosity] = :high if vv
   end
 
   opts.on("-p", "--port" "Define port") do |p|
@@ -24,6 +28,4 @@ end.parse!
 
 server = ObjectCache::Server.new(options)
 server.run!
-
-
 
