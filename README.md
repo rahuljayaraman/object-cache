@@ -17,7 +17,14 @@ cache.add_server "localhost:3002"
 cache.set 'foo', 'bar'
 cache.get 'foo' #=> 'bar'
 
-(1..10).each{|n| cache.set("foo#{n}", "bar") }
+str = "a"
+100.times { str += "a" }
+client.set "foo1", { longHash: str }
+p client.get "foo1" #=> 100 a's
+
+1000.times { str += "a" }
+client.set "foo1", { longHash: str } #This will not work due to the 256 byte memory constraint
+p client.get "foo1" #=> 100 a's
 
 cache.delete("foo1")
 
