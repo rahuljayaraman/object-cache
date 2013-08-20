@@ -6,6 +6,7 @@ module ObjectCache
       @verbosity = params.fetch(:verbosity)
       @max_size = params.fetch(:max_size)
       @cache = {}
+      @log = Logger.new(STDOUT)
     end
 
     def set key, value
@@ -67,33 +68,30 @@ module ObjectCache
 
     def log action, key, value=nil
       return unless high_verbosity
-      log = Logger.new(STDOUT)
       case action
       when :set
-        log.info "Setting the value of #{key} to #{value}"
+        @log.info "Setting the value of #{key} to #{value}"
       when :get
-        log.info "Getting the value of #{key}: #{value}"
+        @log.info "Getting the value of #{key}: #{value}"
       end
     end
 
     def log_error action, key
-      log = Logger.new(STDOUT)
       case action
       when :not_found
-        log.error "#{key} not found"
+        @log.error "#{key} not found"
       when :object_too_large
-        log.error "Skipping #{key}. Size larger than #{@max_size} bytes"
+        @log.error "Skipping #{key}. Size larger than #{@max_size} bytes"
       end
     end
 
     def log_warning action, key
       return unless low_verbosity
-      log = Logger.new(STDOUT)
       case action
       when :delete
-        log.warn "Deleting #{key}"
+        @log.warn "Deleting #{key}"
       when :flush
-        log.warn "Flushing all entries"
+        @log.warn "Flushing all entries"
       end
     end
 
