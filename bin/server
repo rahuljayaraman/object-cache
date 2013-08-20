@@ -1,6 +1,5 @@
 # !/usr/bin/env ruby -w
 
-require 'drb'
 require 'optparse'
 require_relative '../lib/object_cache/server'
 
