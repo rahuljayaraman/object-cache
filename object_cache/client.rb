@@ -38,11 +38,7 @@ module ObjectCache
 
     def remote_cache_object_for action, key, value=nil
       idx = Zlib.crc32(key) % @remote_cache_objects.count
-      if value
-        @remote_cache_objects[idx].send action, key, value
-      else
-        @remote_cache_objects[idx].send action, key
-      end
+      @remote_cache_objects[idx].send action, key, value
     end
 
     def construct uri

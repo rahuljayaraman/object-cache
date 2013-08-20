@@ -24,12 +24,12 @@ module ObjectCache
       delete_lru
     end
 
-    def get key
+    def get key, value=nil
       log(:get, key)
       @cache.fetch(key) { log(:not_found, key); nil }
     end
 
-    def delete key
+    def delete key, value=nil
       log(:delete, key)
       @cache.delete key
     end
