@@ -16,6 +16,11 @@ end
 client.delete "foo11"
 puts client.get "foo11"
 
-client.set "foo1", "newFoo"
-client.get "foo1"
+
+# Desgined to test memory constraints
+str = "a"
+1000.times { str += "a" }
+client.set "foo1", { longHash: str }
+p client.get "foo1"
+
 client.flush

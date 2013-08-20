@@ -25,8 +25,9 @@ module ObjectCache
     end
 
     def get key, value=nil
-      log(:get, key)
-      @cache.fetch(key) { log_error(:not_found, key); nil }
+      value = @cache.fetch(key) { log_error(:not_found, key); nil }
+      log(:get, key, value)
+      value
     end
 
     def delete key, value=nil
@@ -56,7 +57,7 @@ module ObjectCache
 
     def size_of_hash_in_bytes hash
       hash.map do |key, value|
-        key.size + value.size
+        key.size + Marshal.dump(value).size
       end.inject(0, :+)
     end
 
@@ -71,7 +72,7 @@ module ObjectCache
       when :set
         log.info "Setting the value of #{key} to #{value}"
       when :get
-        log.info "Getting the value of #{key}"
+        log.info "Getting the value of #{key}: #{value}"
       end
     end
 
