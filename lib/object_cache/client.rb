@@ -20,7 +20,6 @@ module ObjectCache
 
     def add_server server
       @continuum_list << CreateContinuum.new(server)
-      @continuum_list.sort {|a,b| a.value <=> b.value}
     end
 
     def get key
