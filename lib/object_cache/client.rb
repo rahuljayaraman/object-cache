@@ -1,11 +1,12 @@
 require 'drb'
 require 'zlib'
+require 'digest/md5'
 
 module ObjectCache
   class Client
     def initialize servers
       DRb.start_service
-      @remote_cache_objects = []
+      @continuum_list = []
       if servers.instance_of? String
         add_server servers
       elsif servers.instance_of? Array
@@ -18,33 +19,59 @@ module ObjectCache
     end
 
     def add_server server
-      @remote_cache_objects << DRbObject.new_with_uri(construct(server))
+      @continuum_list << CreateContinuum.new(server)
+      @continuum_list.sort {|a,b| a.value <=> b.value}
     end
 
     def get key
-      remote_cache_object_for(:get, key)
+      server = find_server_for(key)
+      server.get(key)
     end
 
     def set key, value
-      remote_cache_object_for(:set, key, value)
+      server = find_server_for(key)
+      server.set(key, value)
     end
 
     def delete key
-      remote_cache_object_for(:delete, key)
+      server = find_server_for(key)
+      server.delete(key)
     end
 
     def flush
-      @remote_cache_objects.each do |cache|
-        cache.flush
+      @continuum_list.each do |c|
+        c.server.flush
       end
     end
 
+    private
+    def find_server_for key
+      find_closest_match(hash_for(key))
+    end
+
+    def find_closest_match key
+      @continuum_list.min_by do |x| 
+        (x.value - key).abs
+      end.server
+    end
+
+    def hash_for(key)
+      Zlib.crc32(key)
+    end
+  end
+
+  class CreateContinuum
+    attr_reader :server, :value
+
+    def initialize server
+      @server = DRbObject.new_with_uri(construct(server))
+      @value = checksum_for(server)
+    end
 
     private
-
-    def remote_cache_object_for action, key, value=nil
-      idx = Zlib.crc32(key) % @remote_cache_objects.count
-      @remote_cache_objects[idx].send action, key, value
+    def checksum_for server
+      hash = Digest::MD5.hexdigest server
+      Integer("0x#{hash[0..7]}")
     end
 
     def construct uri
