@@ -1,6 +1,6 @@
 require 'drb'
 require 'zlib'
-require 'digest/md5'
+require 'digest/sha1'
 
 module ObjectCache
   class Client
@@ -70,7 +70,7 @@ module ObjectCache
 
     private
     def checksum_for server
-      hash = Digest::MD5.hexdigest server
+      hash = Digest::SHA1.hexdigest server
       Integer("0x#{hash[0..7]}")
     end
 
