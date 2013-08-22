@@ -22,6 +22,12 @@ module ObjectCache
       @continuum_list << CreateContinuum.new(server)
     end
 
+    def remove_server server
+      @continuum_list.reject! do |x|
+        x.server == server
+      end
+    end
+
     def get key
       server = find_server_for(key)
       server.get(key)
@@ -39,7 +45,7 @@ module ObjectCache
 
     def flush
       @continuum_list.each do |c|
-        c.server.flush
+        c.remote_object.flush
       end
     end
 
@@ -51,7 +57,7 @@ module ObjectCache
     def find_closest_match key
       @continuum_list.min_by do |x| 
         (x.value - key).abs
-      end.server
+      end.remote_object
     end
 
     def hash_for(key)
@@ -60,10 +66,11 @@ module ObjectCache
   end
 
   class CreateContinuum
-    attr_reader :server, :value
+    attr_reader :server, :value, :remote_object
 
     def initialize server
-      @server = DRbObject.new_with_uri(construct(server))
+      @remote_object = DRbObject.new_with_uri(construct(server))
+      @server = server
       @value = checksum_for(server)
     end
 

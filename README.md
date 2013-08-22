@@ -5,8 +5,12 @@ ruby bin/server -p 3000 -vv -m 256
 ruby bin/server -p 3001 -vv -m 256
 ruby bin/server -p 3002 -vv -m 256
 ```
+### Run Examples
+```
+ruby example.rb
+```
 
-### Use the cache
+### Usage
 
 ```ruby
 require_relative './object_cache/client'
@@ -31,6 +35,8 @@ client.set "foo1", { longHash: str } #This will not work due to the 256 byte mem
 p client.get "foo1" #=> 100 a's
 
 client.delete("foo1")
+
+client.remove_server "localhost:3002"
 
 client.flush
 ```
